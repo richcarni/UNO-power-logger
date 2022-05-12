@@ -9,28 +9,12 @@ const byte INA226_address = 0x40;
 
 INA226 INA(INA226_address);
 
-uint16_t readRegister(uint8_t reg)
-{
-  TwoWire* wire = &Wire;
-  uint8_t address = INA226_address;
-  
-  wire->beginTransmission(address);
-  wire->write(reg);
-  wire->endTransmission();
-
-  wire->requestFrom(address, (uint8_t)2);
-  uint16_t value = wire->read();
-  value <<= 8;
-  value |= wire->read();
-  return value;
-}
-
 void setup() {
   Serial.begin(115200);
   Serial.println(__FILE__);
 
   pinMode(7, INPUT_PULLUP);
-  pinMode(5, OUTPUT);
+  pinMode(5, OUTPUT); // pin 5 is used for debugging
 
   if (!INA.begin() ) {
     Serial.println("could not connect. Fix and Reboot");
@@ -52,9 +36,9 @@ void loop() {
 
       byte out[4];
       uint16_t* val = (uint16_t*)&out[0];
-      *val = readRegister(INA226_SHUNT_VOLTAGE); // shunt voltage
+      *val = INA.getRegister(INA226_SHUNT_VOLTAGE); // shunt voltage
       val++;
-      *val = readRegister(INA226_BUS_VOLTAGE); // bus voltage
+      *val = INA.getRegister(INA226_BUS_VOLTAGE); // bus voltage
       Serial.write(out, 4);  
       PIND = 1<<5;
   }
