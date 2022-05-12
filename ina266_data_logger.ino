@@ -3,7 +3,6 @@
 
 #define INA226_SHUNT_VOLTAGE        0x01
 #define INA226_BUS_VOLTAGE          0x02
-#define INA226_MASK_ENABLE          0x06
 
 const byte INA226_address = 0x40;
 
